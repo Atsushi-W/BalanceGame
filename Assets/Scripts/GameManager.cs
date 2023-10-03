@@ -139,6 +139,7 @@ public class GameManager : MonoBehaviour
 
         _selectID = coin.ID;
         _selectCoinName = (Coin.CoinName)coin.ID;
+        AudioManager.Instance.PlaySE(AudioManager.SEName.MouseDown);
     }
 
     public void CoinEnter(Coin coin)
@@ -152,6 +153,7 @@ public class GameManager : MonoBehaviour
                 Coin removeCoin = _selectCoin[_selectCoin.Count - 1];
                 removeCoin.SetIsSelect(false);
                 _selectCoin.Remove(removeCoin);
+                AudioManager.Instance.PlaySE(AudioManager.SEName.RemoveCoin);
             }
         }
         else
@@ -161,6 +163,7 @@ public class GameManager : MonoBehaviour
             {
                 _selectCoin.Add(coin);
                 coin.SetIsSelect(true);
+                AudioManager.Instance.PlaySE(AudioManager.SEName.MouseEnter);
             }
         }
     }
@@ -203,5 +206,6 @@ public class GameManager : MonoBehaviour
 
         CoinSpawn(coins.Count - _spawnCoinCount);
         _spawnCoinCount = 0;
+        AudioManager.Instance.PlaySE(AudioManager.SEName.DestroyCoin);
     }
 }
