@@ -1,9 +1,17 @@
+using System;
 using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class GameManager : MonoBehaviour
 {
+
+    public Action<int> OnGameStartCountUpdate;
+    public Action<int> OnScoreUpdate;
+    public Action<int> OnTimeUpdate;
+
     public static GameManager Instance { get; private set; }
 
     public GameObject CoinPrefab;
@@ -16,17 +24,48 @@ public class GameManager : MonoBehaviour
     private List<Coin> _selectCoin = new List<Coin>();
     private int _selectID = -1;
     private Coin.CoinName _selectCoinName;
-    private int _spawnCoinCount = 0;
+    private bool _spawnCoinCountflag = false;
+    [SerializeField]
+    private int _score;
+    [SerializeField]
+    private float _time;
+    private bool _timeflag = true;
+
+    private bool _startflag = false;
+
+    // WaitForSecondsƒLƒƒƒbƒVƒ…
+    private WaitForSeconds cachedWait = new WaitForSeconds(1.0f);
+
+    private void Awake()
+    {
+        // Singleton
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
 
     void Start()
     {
-        Instance = this;
         CoinSpawn(40);
+        StartCoroutine("StartTimer");
     }
 
     void Update()
     {
         LineRendererUpdate();
+
+        if (_startflag)
+        {
+            if (_timeflag)
+            {
+                TimeCount();
+            }
+        }
     }
 
     private void LineRendererUpdate()
@@ -54,7 +93,7 @@ public class GameManager : MonoBehaviour
         {
             Vector2 pos = new Vector2(startX + x, startY + y);
             GameObject coin = Instantiate(CoinPrefab, pos, Quaternion.identity);
-            coin.GetComponent<Coin>().SetCoin((Coin.CoinName)Random.Range(0, 4));
+            coin.GetComponent<Coin>().SetCoin((Coin.CoinName)UnityEngine.Random.Range(0, 4));
             x++;
             if(x == maxX)
             {
@@ -72,58 +111,22 @@ public class GameManager : MonoBehaviour
         switch (_selectCoinName)
         {
             case Coin.CoinName.One:
-                if (_selectCoin.Count >= 5)
-                {
-                    for (int i = 5; i <= _selectCoin.Count; i+=5)
-                    {
-                        GameObject coin = Instantiate(CoinPrefab, _selectCoin[i - 1].transform.position, Quaternion.identity);
-                        coin.GetComponent<Coin>().SetCoin(_selectID + 1);
-                        _spawnCoinCount++;
-                    }
-                }
-                break;
-            case Coin.CoinName.Five:
-                if (_selectCoin.Count >= 2)
-                {
-                    for (int i = 2; i <= _selectCoin.Count; i += 2)
-                    {
-                        GameObject coin = Instantiate(CoinPrefab, _selectCoin[i - 1].transform.position, Quaternion.identity);
-                        coin.GetComponent<Coin>().SetCoin(_selectID + 1);
-                        _spawnCoinCount++;
-                    }
-                }
-                break;
             case Coin.CoinName.Ten:
-                if (_selectCoin.Count >= 5)
-                {
-                    for (int i = 5; i <= _selectCoin.Count; i += 5)
-                    {
-                        GameObject coin = Instantiate(CoinPrefab, _selectCoin[i - 1].transform.position, Quaternion.identity);
-                        coin.GetComponent<Coin>().SetCoin(_selectID + 1);
-                        _spawnCoinCount++;
-                    }
-                }
-                break;
-            case Coin.CoinName.Fifty:
-                if (_selectCoin.Count >= 2)
-                {
-                    for (int i = 2; i <= _selectCoin.Count; i += 2)
-                    {
-                        GameObject coin = Instantiate(CoinPrefab, _selectCoin[i - 1].transform.position, Quaternion.identity);
-                        coin.GetComponent<Coin>().SetCoin(_selectID + 1);
-                        _spawnCoinCount++;
-                    }
-                }
-                break;
             case Coin.CoinName.Hundred:
                 if (_selectCoin.Count >= 5)
                 {
-                    for (int i = 5; i <= _selectCoin.Count; i += 5)
-                    {
-                        GameObject coin = Instantiate(CoinPrefab, _selectCoin[i - 1].transform.position, Quaternion.identity);
-                        coin.GetComponent<Coin>().SetCoin(_selectID + 1);
-                        _spawnCoinCount++;
-                    }
+                    GameObject coin = Instantiate(CoinPrefab, _selectCoin[_selectCoin.Count - 1].transform.position, Quaternion.identity);
+                    coin.GetComponent<Coin>().SetCoin(_selectID + 1);
+                    _spawnCoinCountflag =true;
+                }
+                break;
+            case Coin.CoinName.Five:
+            case Coin.CoinName.Fifty:
+                if (_selectCoin.Count >= 2)
+                {
+                    GameObject coin = Instantiate(CoinPrefab, _selectCoin[_selectCoin.Count - 1].transform.position, Quaternion.identity);
+                    coin.GetComponent<Coin>().SetCoin(_selectID + 1);
+                    _spawnCoinCountflag = true;
                 }
                 break;
             case Coin.CoinName.FiveHundreds:
@@ -134,6 +137,7 @@ public class GameManager : MonoBehaviour
 
     public void CoinDown(Coin coin)
     {
+        if (!_startflag) return;
         _selectCoin.Add(coin);
         coin.SetIsSelect(true);
 
@@ -144,7 +148,7 @@ public class GameManager : MonoBehaviour
 
     public void CoinEnter(Coin coin)
     {
-        if (_selectID != coin.ID) return;
+        if (_selectID != coin.ID || !_startflag) return;
 
         if (coin.IsSelect)
         {
@@ -170,6 +174,8 @@ public class GameManager : MonoBehaviour
 
     public void CoinUp()
     {
+        if (!_startflag) return;
+
         if (_selectCoin.Count >= CoinDestroyCount)
         {
             NextCoinSpawn();
@@ -202,10 +208,92 @@ public class GameManager : MonoBehaviour
         foreach (var coinItem in coins)
         {
             Destroy(coinItem.gameObject);
+
+            switch (_selectCoinName)
+            {
+                case Coin.CoinName.One:
+                    ScoreCount(1);
+                    break;
+                case Coin.CoinName.Five:
+                    ScoreCount(5);
+                    break;
+                case Coin.CoinName.Ten:
+                    ScoreCount(10);
+                    break;
+                case Coin.CoinName.Fifty:
+                    ScoreCount(50);
+                    break;
+                case Coin.CoinName.Hundred:
+                    ScoreCount(100);
+                    break;
+                case Coin.CoinName.FiveHundreds:
+                    ScoreCount(500);
+                    break;
+                default:
+                    break;
+            }
         }
 
-        CoinSpawn(coins.Count - _spawnCoinCount);
-        _spawnCoinCount = 0;
+        if (_spawnCoinCountflag)
+        {
+            CoinSpawn(coins.Count - 1);
+            _spawnCoinCountflag = false;
+        }
+        else
+        {
+            CoinSpawn(coins.Count);
+        }
+
         AudioManager.Instance.PlaySE(AudioManager.SEName.DestroyCoin);
+    }
+
+    private void ScoreCount(int score)
+    {
+        _score += score;
+
+        if (OnScoreUpdate != null)
+        {
+            OnScoreUpdate.Invoke(_score);
+        }
+    }
+
+    private void TimeCount()
+    {
+        _time -= Time.deltaTime;
+
+        if (OnTimeUpdate != null)
+        {
+            OnTimeUpdate.Invoke((int)Mathf.Floor(_time));
+        }
+
+        if (_time <= 0)
+        {
+            _timeflag = false;
+            _startflag = false;
+            AudioManager.Instance.PlaySE(AudioManager.SEName.Result);
+        }
+    }
+
+    IEnumerator StartTimer()
+    {
+        if (OnTimeUpdate != null)
+        {
+            OnTimeUpdate.Invoke((int)Mathf.Floor(_time));
+        }
+
+        for (int i = 3 ;i >= 0; i-- )
+        {
+            if (i == 0)
+            {
+                _startflag = true;
+                AudioManager.Instance.PlayBGM(AudioManager.BGMName.GamePlay);
+            }
+
+            if (OnGameStartCountUpdate != null)
+            {
+                OnGameStartCountUpdate.Invoke(i);
+            }
+            yield return cachedWait;
+        }
     }
 }
