@@ -19,7 +19,7 @@ public class StartCount : MonoBehaviour
     {
         if (count == 0)
         {
-            gameObject.SetActive(false);
+            _countText.text = "";
             AudioManager.Instance.PlaySE(AudioManager.SEName.GameStart);
         }
         else
