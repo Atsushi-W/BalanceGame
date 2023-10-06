@@ -10,6 +10,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     public Action<int> OnGameStartCountUpdate;
     public Action<int> OnScoreUpdate;
     public Action<int> OnTimeUpdate;
+    public Action<int> OnResultScore;
 
     public GameObject CoinPrefab;
 
@@ -271,6 +272,10 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
             _titleGroup.alpha = 0;
             _inGameGroup.alpha = 1;
             _resultGroup.alpha = 1;
+            if (OnResultScore != null)
+            {
+                OnResultScore.Invoke(_score);
+            }
         }
     }
 
@@ -318,6 +323,11 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         _selectID = -1;
         _selectCoin.Clear();
         ObjectPool.Instance.AllReleaseGameObject();
+        _score = 0;
+        if (OnScoreUpdate != null)
+        {
+            OnScoreUpdate.Invoke(_score);
+        }
         GameStart();
     }
 }
