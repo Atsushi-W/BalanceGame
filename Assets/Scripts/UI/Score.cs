@@ -1,6 +1,9 @@
 using UnityEngine;
 using TMPro;
 
+/// <summary>
+/// スコア表示のコンポーネント
+/// </summary>
 public class Score : MonoBehaviour
 {
     private TextMeshProUGUI _scoreText;

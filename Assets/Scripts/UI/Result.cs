@@ -1,7 +1,10 @@
-
 using UnityEngine;
 using TMPro;
 using System.Collections;
+
+/// <summary>
+/// リザルトのスコアを表示するコンポーネント
+/// </summary>
 
 public class Result : MonoBehaviour
 {
@@ -32,8 +35,6 @@ public class Result : MonoBehaviour
         {
             SetRestultScore(score);
         }
-
-        //_resultText.text = "￥" + score.ToString("N0");
     }
 
     private IEnumerator ScoreAnimation(int startscore, int endscore, float duration)

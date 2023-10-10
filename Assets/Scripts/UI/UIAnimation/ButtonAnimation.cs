@@ -2,7 +2,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 
-public class ButtonAnimationControler : MonoBehaviour
+/// <summary>
+/// ボタンを強調するアニメーションをさせるコンポーネント
+/// </summary>
+public class ButtonAnimation : MonoBehaviour
 {
     void Awake()
     {

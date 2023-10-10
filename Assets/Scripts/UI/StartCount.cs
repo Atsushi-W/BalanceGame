@@ -1,6 +1,9 @@
 using UnityEngine;
 using TMPro;
 
+/// <summary>
+/// インゲーム開始時のスリーカウント表示のコンポーネント
+/// </summary>
 public class StartCount : MonoBehaviour
 {
     private TextMeshProUGUI _countText;

@@ -2,8 +2,12 @@ using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// BGM,SEを管理、再生するマネージャー
+/// </summary>
 public class AudioManager : SingletonMonoBehaviour<AudioManager>
 {
+    // SE一覧
     public enum SEName
     {
         MouseDown,
@@ -16,6 +20,7 @@ public class AudioManager : SingletonMonoBehaviour<AudioManager>
         GameEnd,
     }
 
+    // BGM一覧
     public enum BGMName
     {
         Title,
@@ -28,12 +33,11 @@ public class AudioManager : SingletonMonoBehaviour<AudioManager>
     private float _seVolume = 1.0f;
     [SerializeField]
     List<AudioClip> _seList = new List<AudioClip>();
-
-    private List<AudioSource> _seAudioSourceList = new List<AudioSource>();
-
     [SerializeField]
     List<AudioClip> _bgmList = new List<AudioClip>();
+
     private AudioSource _bgmAudioSource;
+    private List<AudioSource> _seAudioSourceList = new List<AudioSource>();
 
     protected override void Awake()
     {
@@ -54,11 +58,10 @@ public class AudioManager : SingletonMonoBehaviour<AudioManager>
         _bgmAudioSource.loop = true;
     }
 
-    private void Start()
-    {
-        PlayBGM(BGMName.Title);
-    }
-
+    /// <summary>
+    /// SEの再生
+    /// </summary>
+    /// <param name="sename">SE名</param>
     public void PlaySE(SEName sename)
     {
         AudioSource se = Instance._seAudioSourceList.FirstOrDefault(x => x.clip.name == sename.ToString());
@@ -69,6 +72,10 @@ public class AudioManager : SingletonMonoBehaviour<AudioManager>
         }
     }
 
+    /// <summary>
+    /// BGMの再生
+    /// </summary>
+    /// <param name="bgmname">BGM名</param>
     public void PlayBGM(BGMName bgmname)
     {
         AudioClip bgm = Instance._bgmList.FirstOrDefault(x => x.name == bgmname.ToString());
@@ -80,6 +87,10 @@ public class AudioManager : SingletonMonoBehaviour<AudioManager>
         }
     }
 
+
+    /// <summary>
+    /// BGMの停止
+    /// </summary>
     public void StopBGM()
     {
         _bgmAudioSource.Stop();

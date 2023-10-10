@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// コインの生成を管理するオブジェクトプール
+/// </summary>
 public class ObjectPool : SingletonMonoBehaviour<ObjectPool>
 {
     private Dictionary<string, Queue<GameObject>> _pooledGameObjects = new Dictionary<string, Queue<GameObject>>();

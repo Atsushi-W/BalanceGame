@@ -1,6 +1,9 @@
 using UnityEngine;
 using TMPro;
 
+/// <summary>
+/// インゲーム中のタイマー表示のコンポーネント
+/// </summary>
 public class Timer : MonoBehaviour
 {
     private TextMeshProUGUI _timeText;

@@ -4,37 +4,27 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
+/// <summary>
+/// ゲーム全体の状況や処理を管理するマネージャー
+/// </summary>
 public class GameManager : SingletonMonoBehaviour<GameManager>
 {
+    // カウントダウン、タイマーやスコアの更新用のAction
     public Action<int> OnGameStartCountUpdate;
     public Action<int> OnScoreUpdate;
     public Action<int> OnTimeUpdate;
     public Action<int> OnResultScore;
 
     public GameObject CoinPrefab;
-
     public LineRenderer lineRenderer;
-
     public int CoinDestroyCount = 3;
     public float CoinConnectRange = 1.5f;
 
-    private List<Coin> _selectCoin = new List<Coin>();
-    private int _selectID = -1;
-    private Coin.CoinName _selectCoinName;
-    private bool _spawnCoinCountflag = false;
     [SerializeField]
     private int _score;
     [SerializeField]
     private float _time;
-    private float _maxtime;
-    private bool _timeflag = true;
-
-    private bool _startflag = false;
-
-    // WaitForSecondsキャッシュ
-    private WaitForSeconds cachedWait = new WaitForSeconds(1.0f);
-
+    // 各画面のCanvasGroup</summary>
     [SerializeField]
     private CanvasGroup _titleGroup;
     [SerializeField]
@@ -42,12 +32,34 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     [SerializeField]
     private CanvasGroup _resultGroup;
 
-    private void Start()
+    private float _maxtime;
+    private bool _timeflag = true;
+    private bool _startflag = false;
+    private List<Coin> _selectCoin = new List<Coin>();
+    private int _selectID = -1;
+    private Coin.CoinName _selectCoinName;
+    private bool _spawnCoinCountflag = false;
+    // WaitForSecondsのキャッシュ
+    private WaitForSeconds cachedWait = new WaitForSeconds(1.0f);
+    // 現在の状態に応じた処理を行うコンポーネント
+    private StateMachine _stateMachine;
+
+    protected override void Awake()
     {
-        _maxtime = _time;
+        base.Awake();
+
+        _stateMachine = GetComponent<StateMachine>();
     }
 
-    void Update()
+    private void Start()
+    {
+        // タイムを保存(リトライで時間を戻す際に使用)
+        _maxtime = _time;
+        // 状態に応じた画面を表示(開始時はタイトル画面)
+        ChangeViewCanvasGroup(_stateMachine.titleState);
+    }
+
+    private void Update()
     {
         LineRendererUpdate();
 
@@ -60,21 +72,11 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         }
     }
 
-    private void LineRendererUpdate()
-    {
-        if (_selectCoin.Count >= 2)
-        {
-            lineRenderer.positionCount = _selectCoin.Count;
-            lineRenderer.SetPositions(_selectCoin.Select(coin => coin.transform.position).ToArray());
-            lineRenderer.gameObject.SetActive(true);
-        }
-        else
-        {
-            lineRenderer.gameObject.SetActive(false);
-        }
-    }
-
-    private void CoinSpawn(int count)
+    /// <summary>
+    /// ゲームで使用するコインの生成
+    /// </summary>
+    /// <param name="count">生成するコインの枚数</param>
+    public void CoinSpawn(int count)
     {
         int startX = -2;
         int startY = 5;
@@ -84,7 +86,6 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         for (int i = 0; i < count; i++)
         {
             Vector2 pos = new Vector2(startX + x, startY + y);
-            //GameObject coin = Instantiate(CoinPrefab, pos, Quaternion.identity);
             GameObject coin = ObjectPool.Instance.GetGameObject(CoinPrefab, pos);
             coin.GetComponent<Coin>().SetCoin((Coin.CoinName)UnityEngine.Random.Range(0, 5));
             x++;
@@ -96,40 +97,10 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         }
     }
 
-    private void NextCoinSpawn()
-    {
-
-        if ((int)Coin.CoinName.FiveHundreds <= _selectID) return;
-
-        switch (_selectCoinName)
-        {
-            case Coin.CoinName.One:
-            case Coin.CoinName.Ten:
-            case Coin.CoinName.Hundred:
-                if (_selectCoin.Count >= 5)
-                {
-                    //GameObject coin = Instantiate(CoinPrefab, _selectCoin[_selectCoin.Count - 1].transform.position, Quaternion.identity);
-                    GameObject coin = ObjectPool.Instance.GetGameObject(CoinPrefab, _selectCoin[_selectCoin.Count - 1].transform.position);
-                    coin.GetComponent<Coin>().SetCoin(_selectID + 1);
-                    _spawnCoinCountflag =true;
-                }
-                break;
-            case Coin.CoinName.Five:
-            case Coin.CoinName.Fifty:
-                if (_selectCoin.Count >= 2)
-                {
-                    //GameObject coin = Instantiate(CoinPrefab, _selectCoin[_selectCoin.Count - 1].transform.position, Quaternion.identity);
-                    GameObject coin = ObjectPool.Instance.GetGameObject(CoinPrefab, _selectCoin[_selectCoin.Count - 1].transform.position);
-                    coin.GetComponent<Coin>().SetCoin(_selectID + 1);
-                    _spawnCoinCountflag = true;
-                }
-                break;
-            case Coin.CoinName.FiveHundreds:
-            default:
-                break;
-        }
-    }
-
+    /// <summary>
+    /// コインの上からマウスを押した時の動作
+    /// </summary>
+    /// <param name="coin">押されたコイン</param>
     public void CoinDown(Coin coin)
     {
         if (!_startflag) return;
@@ -141,6 +112,10 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         AudioManager.Instance.PlaySE(AudioManager.SEName.MouseDown);
     }
 
+    /// <summary>
+    /// マウスをクリックした状態でマウスをコインに重ねた時の動作
+    /// </summary>
+    /// <param name="coin">マウスで重ねたコイン</param>
     public void CoinEnter(Coin coin)
     {
         if (_selectID != coin.ID || !_startflag) return;
@@ -167,6 +142,9 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         }
     }
 
+    /// <summary>
+    /// マウスを離した時の動作
+    /// </summary>
     public void CoinUp()
     {
         if (!_startflag) return;
@@ -198,11 +176,163 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         _selectCoin.Clear();
     }
 
+    /// <summary>
+    /// インゲーム直後のスリーカウントタイマー
+    /// </summary>
+    /// <returns></returns>
+    public IEnumerator StartTimer()
+    {
+        if (OnTimeUpdate != null)
+        {
+            OnTimeUpdate.Invoke((int)Mathf.Floor(_time));
+        }
+
+        for (int i = 3 ;i >= 0; i-- )
+        {
+            if (i == 0)
+            {
+                _startflag = true;
+                AudioManager.Instance.PlayBGM(AudioManager.BGMName.GamePlay);
+            }
+
+            if (OnGameStartCountUpdate != null)
+            {
+                OnGameStartCountUpdate.Invoke(i);
+            }
+            yield return cachedWait;
+        }
+    }
+
+    /// <summary>
+    /// ゲーム開始
+    /// </summary>
+    public void GameStart()
+    {
+        ChangeGameState(_stateMachine.inGameState);
+        StartCoroutine("StartTimer");
+    }
+
+    /// <summary>
+    /// ゲームのリトライ
+    /// </summary>
+    public void GameRestart()
+    {
+        _startflag = false;
+        _timeflag = true;
+        _time = _maxtime;
+        _selectID = -1;
+        _selectCoin.Clear();
+        ObjectPool.Instance.AllReleaseGameObject();
+        _score = 0;
+        if (OnScoreUpdate != null)
+        {
+            OnScoreUpdate.Invoke(_score);
+        }
+        GameStart();
+    }
+
+    /// <summary>
+    /// ゲーム状態の更新
+    /// </summary>
+    /// <param name="nextState">次の状態</param>
+    public void ChangeGameState(IState nextState)
+    {
+        if (nextState == _stateMachine.currentState)
+        {
+            Debug.Log("同じステートです");
+            return;
+        }
+        _stateMachine.ChangeState(nextState);
+        ChangeViewCanvasGroup(nextState);
+    }
+
+    /// <summary>
+    /// 選択しているコインが2枚以上の時、LineRendererを設定
+    /// </summary>
+    private void LineRendererUpdate()
+    {
+        if (_selectCoin.Count >= 2)
+        {
+            lineRenderer.positionCount = _selectCoin.Count;
+            lineRenderer.SetPositions(_selectCoin.Select(coin => coin.transform.position).ToArray());
+            lineRenderer.gameObject.SetActive(true);
+        }
+        else
+        {
+            lineRenderer.gameObject.SetActive(false);
+        }
+    }
+
+    /// <summary>
+    /// キャンバスグループを変更
+    /// </summary>
+    /// <param name="state">次の状態</param>
+    private void ChangeViewCanvasGroup(IState state)
+    {
+        switch (state)
+        {
+            case TitleState:
+                _titleGroup.alpha = 1;
+                _inGameGroup.alpha = 0;
+                _resultGroup.alpha = 0;
+                break;
+            case InGameState:
+                _titleGroup.alpha = 0;
+                _titleGroup.interactable = false;
+                _inGameGroup.alpha = 1;
+                _resultGroup.alpha = 0;
+                break;
+            case ResultState:
+                _titleGroup.alpha = 0;
+                _inGameGroup.alpha = 1;
+                _resultGroup.alpha = 1;
+                break;
+        }
+    }
+
+    /// <summary>
+    /// 現在選択しているコインの次のランク(1円->5円、50円->100円など)のコインを生成
+    /// </summary>
+    private void NextCoinSpawn()
+    {
+
+        if ((int)Coin.CoinName.FiveHundreds <= _selectID) return;
+
+        switch (_selectCoinName)
+        {
+            case Coin.CoinName.One:
+            case Coin.CoinName.Ten:
+            case Coin.CoinName.Hundred:
+                if (_selectCoin.Count >= 5)
+                {
+                    GameObject coin = ObjectPool.Instance.GetGameObject(CoinPrefab, _selectCoin[_selectCoin.Count - 1].transform.position);
+                    coin.GetComponent<Coin>().SetCoin(_selectID + 1);
+                    _spawnCoinCountflag = true;
+                }
+                break;
+            case Coin.CoinName.Five:
+            case Coin.CoinName.Fifty:
+                if (_selectCoin.Count >= 2)
+                {
+                    GameObject coin = ObjectPool.Instance.GetGameObject(CoinPrefab, _selectCoin[_selectCoin.Count - 1].transform.position);
+                    coin.GetComponent<Coin>().SetCoin(_selectID + 1);
+                    _spawnCoinCountflag = true;
+                }
+                break;
+            case Coin.CoinName.FiveHundreds:
+            default:
+                break;
+        }
+    }
+
+    /// <summary>
+    /// コイン消去時の動作
+    /// </summary>
+    /// <param name="coins">消去するコインのリスト</param>
     private void DestroyCoin(List<Coin> coins)
     {
         foreach (var coinItem in coins)
         {
-            //Destroy(coinItem.gameObject);
             coinItem.SetIsSelect(false);
             ObjectPool.Instance.ReleaseGameObject(coinItem.gameObject);
 
@@ -244,6 +374,10 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         AudioManager.Instance.PlaySE(AudioManager.SEName.DestroyCoin);
     }
 
+    /// <summary>
+    /// スコアカウント更新
+    /// </summary>
+    /// <param name="score">スコア</param>
     private void ScoreCount(int score)
     {
         _score += score;
@@ -253,7 +387,10 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
             OnScoreUpdate.Invoke(_score);
         }
     }
-
+    
+    /// <summary>
+    /// タイマーカウント更新
+    /// </summary>
     private void TimeCount()
     {
         _time -= Time.deltaTime;
@@ -267,67 +404,13 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         {
             _timeflag = false;
             _startflag = false;
-            AudioManager.Instance.PlaySE(AudioManager.SEName.GameEnd);
 
-            _titleGroup.alpha = 0;
-            _inGameGroup.alpha = 1;
-            _resultGroup.alpha = 1;
+            ChangeGameState(_stateMachine.resultState);
+
             if (OnResultScore != null)
             {
                 OnResultScore.Invoke(_score);
             }
         }
-    }
-
-    IEnumerator StartTimer()
-    {
-        if (OnTimeUpdate != null)
-        {
-            OnTimeUpdate.Invoke((int)Mathf.Floor(_time));
-        }
-
-        for (int i = 3 ;i >= 0; i-- )
-        {
-            if (i == 0)
-            {
-                _startflag = true;
-                AudioManager.Instance.PlayBGM(AudioManager.BGMName.GamePlay);
-            }
-
-            if (OnGameStartCountUpdate != null)
-            {
-                OnGameStartCountUpdate.Invoke(i);
-            }
-            yield return cachedWait;
-        }
-    }
-
-    public void GameStart()
-    {
-        AudioManager.Instance.StopBGM();
-
-        _titleGroup.alpha = 0;
-        _titleGroup.interactable = false;
-        _inGameGroup.alpha = 1;
-        _resultGroup.alpha = 0;
-
-        CoinSpawn(40);
-        StartCoroutine("StartTimer");
-    }
-
-    public void GameRestart()
-    {
-        _startflag = false;
-        _timeflag = true;
-        _time = _maxtime;
-        _selectID = -1;
-        _selectCoin.Clear();
-        ObjectPool.Instance.AllReleaseGameObject();
-        _score = 0;
-        if (OnScoreUpdate != null)
-        {
-            OnScoreUpdate.Invoke(_score);
-        }
-        GameStart();
     }
 }

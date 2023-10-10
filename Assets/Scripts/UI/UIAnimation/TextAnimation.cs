@@ -3,7 +3,11 @@ using UnityEngine.UI;
 using DG.Tweening;
 using TMPro;
 
-public class TextAnimationControler : MonoBehaviour
+/// <summary>
+/// テキストをアニメーションをさせるコンポーネント
+/// </summary>
+
+public class TextAnimation : MonoBehaviour
 {
     private TextMeshProUGUI _text = default;
     private DOTweenTMPAnimator _tmpAnimator;
@@ -17,11 +21,11 @@ public class TextAnimationControler : MonoBehaviour
         Play(_textDuration);
     }
 
-    public void Play(float duration)
+    private void Play(float duration)
     {
         for (var i = 0; i < _tmpAnimator.textInfo.characterCount; i++)
         {
-            // 空文字(空白)はスルー
+            // エラーになるため空文字(空白)はスルー
             if (!_tmpAnimator.textInfo.characterInfo[i].isVisible)
             {
                 continue;

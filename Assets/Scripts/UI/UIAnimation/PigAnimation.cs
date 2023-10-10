@@ -1,6 +1,10 @@
 using UnityEngine;
 using DG.Tweening;
 
+/// <summary>
+/// スコア獲得時に豚をアニメーションさせるコンポーネント
+/// </summary>
+
 public class PigAnimation : MonoBehaviour
 {
     private RectTransform _rectTransform;

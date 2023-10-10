@@ -139,7 +139,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ID: 1
   SelectSprite: {fileID: 9101579529428401345}
-  coinTexture:
+  _coinTexture:
   - {fileID: 1529341247, guid: 77bcc94ff9d412040b3083a78c8e7c05, type: 3}
   - {fileID: -653720669, guid: 77bcc94ff9d412040b3083a78c8e7c05, type: 3}
   - {fileID: -848539565, guid: 77bcc94ff9d412040b3083a78c8e7c05, type: 3}

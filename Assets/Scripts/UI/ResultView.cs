@@ -1,6 +1,9 @@
 using UnityEngine;
 using DG.Tweening;
 
+/// <summary>
+/// リザルトのスコア表示をするウィンドウをアニメーションさせるコンポーネント
+/// </summary>
 public class ResultView : MonoBehaviour
 {
     private RectTransform _rectTransform;
