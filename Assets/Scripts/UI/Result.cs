@@ -13,6 +13,8 @@ public class Result : MonoBehaviour
     private float _scoreTimeDuration;
     [SerializeField]
     private GameObject _retryButton;
+    [SerializeField]
+    private GameObject _highScoreObject;
 
     private void Awake()
     {
@@ -69,6 +71,16 @@ public class Result : MonoBehaviour
 
         AudioManager.Instance.PlaySE(AudioManager.SEName.Result);
         _retryButton.SetActive(true);
+
+        // ハイスコアを確認
+        int highscore = PlayerPrefs.GetInt("moneytsumscore", 0);
+        if (highscore < score)
+        {
+            _highScoreObject.SetActive(true);
+            // ハイスコアを保存
+            PlayerPrefs.SetInt("moneytsumscore", score);
+            PlayerPrefs.Save();
+        }
     }
 
     private void ResetScore()

@@ -14,6 +14,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     public Action<int> OnScoreUpdate;
     public Action<int> OnTimeUpdate;
     public Action<int> OnResultScore;
+    public Action<int> OnHighScore;
 
     public GameObject CoinPrefab;
     public LineRenderer lineRenderer;
@@ -227,6 +228,11 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         if (OnScoreUpdate != null)
         {
             OnScoreUpdate.Invoke(_score);
+        }
+        if (OnHighScore != null)
+        {
+            int highscore = PlayerPrefs.GetInt("moneytsumscore", 0);
+            OnHighScore.Invoke(highscore);
         }
         GameStart();
     }
