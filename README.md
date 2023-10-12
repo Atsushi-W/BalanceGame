@@ -1,10 +1,27 @@
-# BalanceGame
+# Money Tsum
+・タイトル画面   
+<img src="" width="500"></img>  
+・ゲーム画面   
+<img src="" width="500"></img>  
+・リザルト画面   
+<img src="" width="500"></img> 
 
-# ゲーム説明
-(タイトルはまだ未定)   
+# ゲーム説明   
 お金をつなげて貯金(残高)を増やそう！   
 硬貨は特定の枚数をつなぐことで両替することができるぞ！   
 ※1円玉を5枚つなぐと5円玉、5円玉2枚で10円玉...   
+
+# 操作説明
+<img src=""></img>   
+硬貨をマウス左クリックすることで選択、ドラッグで同じ硬貨同士であればつなげることができます。   
+離すと条件を満たしていれば消去し、満たしていない場合は選択が解除されます。   
+基本的に硬貨は3枚以上つなげると消すことができます。※一部2枚以上で消せる硬貨もあります   
+硬貨は一定枚数つなげて消すと硬貨を1枚生成します。   
+1円玉 → 5枚以上で5円玉   
+5円玉 → 2枚以上で10円玉   
+10円玉 → 5枚以上で50円玉   
+50円玉 → 2枚以上で100円玉   
+100円玉 → 5枚以上で500円玉   
 
 # 制作環境
 Unity 2021.3.29f1
@@ -29,3 +46,33 @@ Unity 2021.3.29f1
 　5円玉→10円玉、50円玉→100円玉   
 ・スコアは消した硬貨によって加算(1円玉は1枚につき1点、100円玉は1枚につき100点など)   
 ・制限時間に達したらリザルト画面を表示   
+
+# 使用したアセット
+・TextMeshPro  
+  
+・魔王魂  
+　https://maou.audio/  
+
+・DOVA-SYNDROME   
+ 　https://dova-s.jp/   
+
+・無料効果音で遊ぼう！   
+　https://taira-komori.jpn.org/freesound.html
+
+・illustAC  
+　https://www.ac-illust.com/   
+
+・みんちりえ   
+　https://min-chi.material.jp/   
+
+・にくまるフォント   
+　https://flopdesign.booth.pm/items/4571432   
+
+・2D Casual UI HD   
+　https://assetstore.unity.com/packages/2d/gui/icons/2d-casual-ui-hd-82080   
+
+・Buttons Set   
+　https://assetstore.unity.com/packages/2d/gui/buttons-set-211824   
+
+・DOTween Pro   
+　https://assetstore.unity.com/packages/tools/visual-scripting/dotween-pro-32416   
