@@ -25,7 +25,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     private int _score;
     [SerializeField]
     private float _time;
-    // Še‰æ–Ê‚ÌCanvasGroup</summary>
+    // Še‰æ–Ê‚ÌCanvasGroup
     [SerializeField]
     private CanvasGroup _titleGroup;
     [SerializeField]
