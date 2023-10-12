@@ -6,6 +6,9 @@
 ・リザルト画面   
 <img src="./SS/Result.png" width="500"></img> 
 
+以下URLからプレイできます。   
+https://atsushi-w.github.io/BalanceGame/   
+
 # ゲーム説明   
 お金をつなげて貯金(残高)を増やそう！   
 硬貨は特定の枚数をつなぐことで両替することができるぞ！   
