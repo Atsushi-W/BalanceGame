@@ -24,6 +24,7 @@ public class PigAnimation : MonoBehaviour
         if (score != 0)
         {
             _rectTransform.DOKill();
+            _rectTransform.localScale = Vector3.one;
             _rectTransform.DOPunchScale(
                 Vector2.one * 0.2f,
                 1.0f
