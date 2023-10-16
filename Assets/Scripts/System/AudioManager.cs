@@ -18,6 +18,7 @@ public class AudioManager : SingletonMonoBehaviour<AudioManager>
         StartTimer,
         GameStart,
         GameEnd,
+        Shake,
     }
 
     // BGMˆê——

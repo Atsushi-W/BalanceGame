@@ -21,6 +21,9 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     public int CoinDestroyCount = 3;
     public float CoinConnectRange = 1.5f;
 
+    // ゲームスタートフラグ
+    public bool Startflag = false;
+
     [SerializeField]
     private int _score;
     [SerializeField]
@@ -35,7 +38,6 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
 
     private float _maxtime;
     private bool _timeflag = true;
-    private bool _startflag = false;
     private List<Coin> _selectCoin = new List<Coin>();
     private int _selectID = -1;
     private Coin.CoinName _selectCoinName;
@@ -64,7 +66,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     {
         LineRendererUpdate();
 
-        if (_startflag)
+        if (Startflag)
         {
             if (_timeflag)
             {
@@ -104,7 +106,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     /// <param name="coin">押されたコイン</param>
     public void CoinDown(Coin coin)
     {
-        if (!_startflag) return;
+        if (!Startflag) return;
         _selectCoin.Add(coin);
         coin.SetIsSelect(true);
 
@@ -119,7 +121,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     /// <param name="coin">マウスで重ねたコイン</param>
     public void CoinEnter(Coin coin)
     {
-        if (_selectID != coin.ID || !_startflag) return;
+        if (_selectID != coin.ID || !Startflag) return;
 
         if (coin.IsSelect)
         {
@@ -148,7 +150,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     /// </summary>
     public void CoinUp()
     {
-        if (!_startflag) return;
+        if (!Startflag) return;
 
         if (_selectCoin.Count >= CoinDestroyCount)
         {
@@ -192,7 +194,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         {
             if (i == 0)
             {
-                _startflag = true;
+                Startflag = true;
                 AudioManager.Instance.PlayBGM(AudioManager.BGMName.GamePlay);
             }
 
@@ -218,7 +220,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     /// </summary>
     public void GameRestart()
     {
-        _startflag = false;
+        Startflag = false;
         _timeflag = true;
         _time = _maxtime;
         _selectID = -1;
@@ -409,7 +411,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         if (_time <= 0)
         {
             _timeflag = false;
-            _startflag = false;
+            Startflag = false;
 
             ChangeGameState(_stateMachine.resultState);
 
