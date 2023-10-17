@@ -884,7 +884,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 240928966}
   m_Enabled: 1
-  m_Alpha: 1
+  m_Alpha: 0
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
@@ -1085,6 +1085,7 @@ MonoBehaviour:
   lineRenderer: {fileID: 296576201}
   CoinDestroyCount: 3
   CoinConnectRange: 1.8
+  EffectPrefab: {fileID: 193334832282254704, guid: 843e441ed3d68ec4db1caa9013c828d1, type: 3}
   Startflag: 0
   _score: 0
   _time: 90
@@ -1276,7 +1277,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0

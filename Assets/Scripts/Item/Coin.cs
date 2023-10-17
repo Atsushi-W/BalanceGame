@@ -41,6 +41,15 @@ public class Coin : MonoBehaviour
     {
         IsSelect = isSelect;
         SelectSprite.SetActive(isSelect);
+        // ‘I‘ğó‘Ô‚É‰‚¶‚Ä“§–¾“x‚ğİ’è
+        if (isSelect)
+        {
+            _spriteRenderer.color = new Color(1, 1, 1, 0.5f);
+        }
+        else
+        {
+            _spriteRenderer.color = new Color(1, 1, 1, 1);
+        }
     }
 
     /// <summary>

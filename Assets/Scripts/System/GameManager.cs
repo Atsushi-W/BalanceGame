@@ -21,6 +21,8 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     public int CoinDestroyCount = 3;
     public float CoinConnectRange = 1.5f;
 
+    public GameObject EffectPrefab;
+
     // ゲームスタートフラグ
     public bool Startflag = false;
 
@@ -173,6 +175,8 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
                 {
                     coinItem.SetIsSelect(false);
                 }
+                // 消せない時も音を鳴らす
+                AudioManager.Instance.PlaySE(AudioManager.SEName.RemoveCoin);
             }
         }
         _selectID = -1;
@@ -339,6 +343,9 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     /// <param name="coins">消去するコインのリスト</param>
     private void DestroyCoin(List<Coin> coins)
     {
+        // コインの最後のポジションを取得
+        Vector3 lastpos = coins[coins.Count - 1].gameObject.transform.position;
+
         foreach (var coinItem in coins)
         {
             coinItem.SetIsSelect(false);
@@ -378,6 +385,9 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         {
             CoinSpawn(coins.Count);
         }
+
+        // エフェクトの生成
+        Instantiate(EffectPrefab, lastpos, Quaternion.identity);
 
         AudioManager.Instance.PlaySE(AudioManager.SEName.DestroyCoin);
     }
