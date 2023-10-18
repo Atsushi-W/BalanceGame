@@ -21,8 +21,6 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     public int CoinDestroyCount = 3;
     public float CoinConnectRange = 1.5f;
 
-    public GameObject EffectPrefab;
-
     // ゲームスタートフラグ
     public bool Startflag = false;
 
@@ -387,7 +385,8 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         }
 
         // エフェクトの生成
-        Instantiate(EffectPrefab, lastpos, Quaternion.identity);
+        EffectManager.Instance.GetEffectGameObject(lastpos);
+
 
         AudioManager.Instance.PlaySE(AudioManager.SEName.DestroyCoin);
     }

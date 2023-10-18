@@ -22,6 +22,7 @@ public class Shake : MonoBehaviour
     [SerializeField]
     private int _shakeCount;
 
+    private int _initialShakeCount;
     private float _initialPosition;
     private float _movePosition;
     private float _minPosition;
@@ -34,6 +35,7 @@ public class Shake : MonoBehaviour
     private void Awake()
     {
         _shaketext = GetComponent<TextMeshProUGUI>();
+        _initialShakeCount = _shakeCount;
     }
 
     private void Start()
@@ -51,6 +53,15 @@ public class Shake : MonoBehaviour
         {
             StartCoroutine("ShakePosition");
         }
+    }
+
+    /// <summary>
+    /// シェイクカウントのリセット
+    /// </summary>
+    public void RestShakeCount()
+    {
+        _shakeCount = _initialShakeCount;
+        _shaketext.text = _shakeCount.ToString();
     }
 
     /// <summary>
