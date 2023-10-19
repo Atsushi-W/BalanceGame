@@ -344,30 +344,41 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         // コインの最後のポジションを取得
         Vector3 lastpos = coins[coins.Count - 1].gameObject.transform.position;
 
+        // スコアカウント
+        int score = 0;
+
         foreach (var coinItem in coins)
         {
             coinItem.SetIsSelect(false);
             ObjectPool.Instance.ReleaseGameObject(coinItem.gameObject);
+            // エフェクトの生成
+            EffectManager.Instance.GetEffectGameObject(coinItem.gameObject.transform.position);
 
             switch (_selectCoinName)
             {
                 case Coin.CoinName.One:
                     ScoreCount(1);
+                    score += 1;
                     break;
                 case Coin.CoinName.Five:
                     ScoreCount(5);
+                    score += 5;
                     break;
                 case Coin.CoinName.Ten:
                     ScoreCount(10);
+                    score += 10;
                     break;
                 case Coin.CoinName.Fifty:
                     ScoreCount(50);
+                    score += 50;
                     break;
                 case Coin.CoinName.Hundred:
                     ScoreCount(100);
+                    score += 100;
                     break;
                 case Coin.CoinName.FiveHundreds:
                     ScoreCount(500);
+                    score += 500;
                     break;
                 default:
                     break;
@@ -384,9 +395,8 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
             CoinSpawn(coins.Count);
         }
 
-        // エフェクトの生成
-        EffectManager.Instance.GetEffectGameObject(lastpos);
-
+        // スコア表示エフェクトの生成
+        EffectManager.Instance.GetScoreObject(lastpos,score);
 
         AudioManager.Instance.PlaySE(AudioManager.SEName.DestroyCoin);
     }
