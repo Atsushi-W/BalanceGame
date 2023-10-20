@@ -1,8 +1,10 @@
 # Money Tsum
 ・タイトル画面   
 <img src="./SS/Title.png" width="500"></img>    
+
 ・ゲーム画面   
 <img src="./SS/InGame.png" width="500"></img>  
+
 ・リザルト画面   
 <img src="./SS/Result.png" width="500"></img> 
 
@@ -53,30 +55,44 @@ Unity 2021.3.29f1
 
 # 使用したアセット
 ・TextMeshPro  
+　UIのテキスト表示に使用しています。  
   
 ・魔王魂  
+　タイトルBGMで使用しています  
 　https://maou.audio/  
 
 ・DOVA-SYNDROME   
- 　https://dova-s.jp/   
+　ゲーム内BGMで使用しています。  
+　https://dova-s.jp/   
 
 ・無料効果音で遊ぼう！   
+　硬貨の選択や消去、各種動作の効果音で使用しています。   
 　https://taira-komori.jpn.org/freesound.html
 
 ・illustAC  
+　豚の貯金箱、硬貨のイラストを使用しています。   
 　https://www.ac-illust.com/   
 
 ・みんちりえ   
+　背景画像に使用しています。   
 　https://min-chi.material.jp/   
 
 ・にくまるフォント   
+　ゲーム内テキストのフォントに使用しています。   
 　https://flopdesign.booth.pm/items/4571432   
 
 ・2D Casual UI HD   
+　タイトル、リザルトなどのUI画面に使用しています。   
 　https://assetstore.unity.com/packages/2d/gui/icons/2d-casual-ui-hd-82080   
 
 ・Buttons Set   
+　ゲームのボタンデザインに使用しています。   
 　https://assetstore.unity.com/packages/2d/gui/buttons-set-211824   
 
+・Cartoon FX Remaster Free   
+　硬貨を消去した際のエフェクトに使用しています。   
+　https://assetstore.unity.com/packages/vfx/particles/cartoon-fx-remaster-free-109565   
+ 
 ・DOTween Pro   
+　UIの各種アニメーションに使用しています。   
 　https://assetstore.unity.com/packages/tools/visual-scripting/dotween-pro-32416   
