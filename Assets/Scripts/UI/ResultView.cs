@@ -8,7 +8,6 @@ public class ResultView : MonoBehaviour
 {
     private RectTransform _rectTransform;
 
-
     private void Awake()
     {
         _rectTransform = GetComponent<RectTransform>();
@@ -19,6 +18,10 @@ public class ResultView : MonoBehaviour
         GameManager.Instance.OnResultScore += ViewResultWindow;
     }
 
+    /// <summary>
+    /// リザルトスコアが渡されたらアニメーションを再生
+    /// </summary>
+    /// <param name="score">リザルトのスコア</param>
     private void ViewResultWindow(int score)
     {
         _rectTransform.anchoredPosition = new Vector3(0, 700, 0);

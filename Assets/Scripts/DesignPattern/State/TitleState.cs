@@ -9,7 +9,8 @@ public class TitleState : IState
 {
     public void Enter()
     {
-        AudioManager.Instance.PlayBGM(AudioManager.BGMName.Title);
+        // WebGL上では最初は音が鳴らない(画面のクリックが必要)ため削除
+        //AudioManager.Instance.PlayBGM(AudioManager.BGMName.Title);
     }
 
     public void Update()
